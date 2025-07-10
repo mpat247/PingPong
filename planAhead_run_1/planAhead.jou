@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# PlanAhead v13.4 (64-bit)
+# Build 157570 by hdbuild on Fri Dec 16 12:49:33 MST 2011
+# Start of session at: Thu Nov 23 13:34:19 2023
+# Process ID: 2990
+# Log file: /home/student1/mppatel/Downloads/Project2PingPong/planAhead_run_1/planAhead.log
+# Journal file: /home/student1/mppatel/Downloads/Project2PingPong/planAhead_run_1/planAhead.jou
+#-----------------------------------------------------------
+start_gui
+source /home/student1/mppatel/Downloads/Project2PingPong/pa.fromNetlist.tcl
+exit
+stop_gui

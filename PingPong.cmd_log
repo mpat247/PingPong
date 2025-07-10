@@ -1,0 +1,71 @@
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+map -intstyle ise -p xc3s500e-fg320-5 -cm area -ir off -pr off -c 100 -o PingPong_map.ncd PingPong.ngd PingPong.pcf 
+par -w -intstyle ise -ol high -t 1 PingPong_map.ncd PingPong.ncd PingPong.pcf 
+trce -intstyle ise -v 3 -s 5 -n 3 -fastpaths -xml PingPong.twx PingPong.ncd -o PingPong.twr PingPong.pcf -ucf PingPong.ucf 
+bitgen -intstyle ise -f PingPong.ut PingPong.ncd 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+map -intstyle ise -p xc3s500e-fg320-5 -cm area -ir off -pr off -c 100 -o PingPong_map.ncd PingPong.ngd PingPong.pcf 
+par -w -intstyle ise -ol high -t 1 PingPong_map.ncd PingPong.ncd PingPong.pcf 
+trce -intstyle ise -v 3 -s 5 -n 3 -fastpaths -xml PingPong.twx PingPong.ncd -o PingPong.twr PingPong.pcf -ucf PingPong.ucf 
+bitgen -intstyle ise -f PingPong.ut PingPong.ncd 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+map -intstyle ise -p xc3s500e-fg320-5 -cm area -ir off -pr off -c 100 -o PingPong_map.ncd PingPong.ngd PingPong.pcf 
+par -w -intstyle ise -ol high -t 1 PingPong_map.ncd PingPong.ncd PingPong.pcf 
+trce -intstyle ise -v 3 -s 5 -n 3 -fastpaths -xml PingPong.twx PingPong.ncd -o PingPong.twr PingPong.pcf -ucf PingPong.ucf 
+bitgen -intstyle ise -f PingPong.ut PingPong.ncd 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+map -intstyle ise -p xc3s500e-fg320-5 -cm area -ir off -pr off -c 100 -o PingPong_map.ncd PingPong.ngd PingPong.pcf 
+par -w -intstyle ise -ol high -t 1 PingPong_map.ncd PingPong.ncd PingPong.pcf 
+trce -intstyle ise -v 3 -s 5 -n 3 -fastpaths -xml PingPong.twx PingPong.ncd -o PingPong.twr PingPong.pcf -ucf PingPong.ucf 
+bitgen -intstyle ise -f PingPong.ut PingPong.ncd 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+map -intstyle ise -p xc3s500e-fg320-5 -cm area -ir off -pr off -c 100 -o PingPong_map.ncd PingPong.ngd PingPong.pcf 
+par -w -intstyle ise -ol high -t 1 PingPong_map.ncd PingPong.ncd PingPong.pcf 
+trce -intstyle ise -v 3 -s 5 -n 3 -fastpaths -xml PingPong.twx PingPong.ncd -o PingPong.twr PingPong.pcf -ucf PingPong.ucf 
+bitgen -intstyle ise -f PingPong.ut PingPong.ncd 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+ngdbuild -intstyle ise -dd _ngo -nt timestamp -uc PingPong.ucf -p xc3s500e-fg320-5 PingPong.ngc PingPong.ngd  
+map -intstyle ise -p xc3s500e-fg320-5 -cm area -ir off -pr off -c 100 -o PingPong_map.ncd PingPong.ngd PingPong.pcf 
+par -w -intstyle ise -ol high -t 1 PingPong_map.ncd PingPong.ncd PingPong.pcf 
+trce -intstyle ise -v 3 -s 5 -n 3 -fastpaths -xml PingPong.twx PingPong.ncd -o PingPong.twr PingPong.pcf -ucf PingPong.ucf 
+bitgen -intstyle ise -f PingPong.ut PingPong.ncd 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 
+xst -intstyle ise -ifn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.xst" -ofn "/home/student1/mppatel/Downloads/Project2PingPong/PingPong.syr" 

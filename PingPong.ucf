@@ -1,0 +1,45 @@
+# User Constraint File (UCF) for SVGP Project
+
+# Clock
+NET "Clk" LOC = "c9"; # 50 MHz input clock
+
+# Player control switches
+NET "SW3" LOC = "N17"; # Player control switch 0
+NET "SW2" LOC = "H18"; # Player control switch 1
+NET "SW1" LOC = "L14"; # Player control switch 2
+NET "SW0" LOC = "L13"; # Player control switch 3
+
+# VGA Interface
+NET "VGA_HSync" LOC = "c5"; # VGA horizontal sync signal
+NET "VGA_VSync" LOC = "d5"; # VGA vertical sync signal
+NET "DAC_CLK" LOC = "a4"; # Pixel clock for the video DAC
+
+# VGA Blue Channel Pins
+NET "VGA_Blue<7>" LOC = "b16";
+NET "VGA_Blue<6>" LOC = "a16";
+NET "VGA_Blue<5>" LOC = "d14";
+NET "VGA_Blue<4>" LOC = "c14";
+NET "VGA_Blue<3>" LOC = "b14";
+NET "VGA_Blue<2>" LOC = "a14";
+NET "VGA_Blue<1>" LOC = "b13";
+NET "VGA_Blue<0>" LOC = "a13";
+
+# VGA Green Channel Pins
+NET "VGA_Green<7>" LOC = "f12";
+NET "VGA_Green<6>" LOC = "e12";
+NET "VGA_Green<5>" LOC = "e11";
+NET "VGA_Green<4>" LOC = "f11";
+NET "VGA_Green<3>" LOC = "c11";
+NET "VGA_Green<2>" LOC = "d11";
+NET "VGA_Green<1>" LOC = "e9";
+NET "VGA_Green<0>" LOC = "f9";
+
+# VGA Red Channel Pins
+NET "VGA_Red<7>" LOC = "e8";
+NET "VGA_Red<6>" LOC = "f8";
+NET "VGA_Red<5>" LOC = "c7";
+NET "VGA_Red<4>" LOC = "d7";
+NET "VGA_Red<3>" LOC = "f7";
+NET "VGA_Red<2>" LOC = "e7";
+NET "VGA_Red<1>" LOC = "b6";
+NET "VGA_Red<0>" LOC = "a6";

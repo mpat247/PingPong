@@ -1,0 +1,37 @@
+Release 13.4 - ngc2edif O.87xd (lin64)
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+Reading design PingPong.ngc ...
+WARNING:NetListWriters:298 - No output is written to PingPong.xncf, ignored.
+Processing design ...
+   Preping design's networks ...
+   Preping design's macros ...
+WARNING:NetListWriters:306 - Signal bus Madd_Ball_H_Direction_addsub0000_lut<3 :
+   1> on block PingPong is not reconstructed, because there are some missing bus
+   signals.
+WARNING:NetListWriters:306 - Signal bus Madd_VGA_Blue_add0001_lut<6 : 4> on
+   block PingPong is not reconstructed, because there are some missing bus
+   signals.
+WARNING:NetListWriters:306 - Signal bus Madd_VGA_Blue_add0002_lut<6 : 4> on
+   block PingPong is not reconstructed, because there are some missing bus
+   signals.
+WARNING:NetListWriters:306 - Signal bus Madd_VGA_Blue_addsub0000_lut<3 : 1> on
+   block PingPong is not reconstructed, because there are some missing bus
+   signals.
+WARNING:NetListWriters:306 - Signal bus Madd_VGA_Blue_addsub0001_lut<3 : 1> on
+   block PingPong is not reconstructed, because there are some missing bus
+   signals.
+WARNING:NetListWriters:306 - Signal bus
+   Mcompar_Ball_H_Direction_cmp_ge0002_lut<11 : 1> on block PingPong is not
+   reconstructed, because there are some missing bus signals.
+WARNING:NetListWriters:306 - Signal bus
+   Mcompar_Ball_H_Direction_cmp_le0002_lut<12 : 0> on block PingPong is not
+   reconstructed, because there are some missing bus signals.
+WARNING:NetListWriters:306 - Signal bus
+   Mcompar_Ball_V_Direction_cmp_ge0000_lut<11 : 0> on block PingPong is not
+   reconstructed, because there are some missing bus signals.
+WARNING:NetListWriters:306 - Signal bus VGA_Blue_mux0000<5 : 2> on block
+   PingPong is not reconstructed, because there are some missing bus signals.
+  finished :Prep
+Writing EDIF netlist file PingPong.edif ...
+ngc2edif: Total memory usage is 107120 kilobytes
+

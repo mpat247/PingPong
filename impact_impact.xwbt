@@ -1,0 +1,8 @@
+INTSTYLE=impact
+INFILE=/home/student1/mppatel/Downloads/Project2PingPong/impact.xsl
+OUTFILE=/home/student1/mppatel/Downloads/Project2PingPong/impact.xsl
+FAMILY=Multiple
+PART=Multiple
+WORKINGDIR=/home/student1/mppatel/Downloads/Project2PingPong
+LICENSE=iMPACT
+USER_INFO=iMPACT
