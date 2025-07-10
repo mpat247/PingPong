@@ -1,45 +1,51 @@
-# User Constraint File (UCF) for SVGP Project
+#############################################
+# User Constraint File (UCF) for PingPong Project
+# Xilinx Spartan-3E FPGA | 50 MHz sys_clk | VGA Output
+#############################################
 
-# Clock
-NET "Clk" LOC = "c9"; # 50 MHz input clock
+# Clock Input
+NET "sys_clk"      LOC = "C9"   | IOSTANDARD = LVCMOS33;   # 50 MHz input clock
 
-# Player control switches
-NET "SW3" LOC = "N17"; # Player control switch 0
-NET "SW2" LOC = "H18"; # Player control switch 1
-NET "SW1" LOC = "L14"; # Player control switch 2
-NET "SW0" LOC = "L13"; # Player control switch 3
+# Reset & Control Switches
+NET "reset_btn"    LOC = "L13" | IOSTANDARD = LVCMOS33;   # SW0: Active-high reset
+NET "p1_up_btn"    LOC = "L14" | IOSTANDARD = LVCMOS33;   # SW1: Player 1 move up
+NET "p1_down_btn"  LOC = "H18" | IOSTANDARD = LVCMOS33;   # SW2: Player 1 move down
+NET "pause_btn"    LOC = "N17" | IOSTANDARD = LVCMOS33;   # SW3: Pause or unused
 
-# VGA Interface
-NET "VGA_HSync" LOC = "c5"; # VGA horizontal sync signal
-NET "VGA_VSync" LOC = "d5"; # VGA vertical sync signal
-NET "DAC_CLK" LOC = "a4"; # Pixel clock for the video DAC
+# VGA Synchronization Signals
+NET "vga_hs"       LOC = "C5"  | IOSTANDARD = LVCMOS33;   # Horizontal sync
+NET "vga_vs"       LOC = "D5"  | IOSTANDARD = LVCMOS33;   # Vertical sync
 
-# VGA Blue Channel Pins
-NET "VGA_Blue<7>" LOC = "b16";
-NET "VGA_Blue<6>" LOC = "a16";
-NET "VGA_Blue<5>" LOC = "d14";
-NET "VGA_Blue<4>" LOC = "c14";
-NET "VGA_Blue<3>" LOC = "b14";
-NET "VGA_Blue<2>" LOC = "a14";
-NET "VGA_Blue<1>" LOC = "b13";
-NET "VGA_Blue<0>" LOC = "a13";
+# VGA Color Channels
+## Red Channel (3-bit output from RGB[7:5])
+NET "vga_r<0>"     LOC = "A6"  | IOSTANDARD = LVCMOS33;
+NET "vga_r<1>"     LOC = "B6"  | IOSTANDARD = LVCMOS33;
+NET "vga_r<2>"     LOC = "E7"  | IOSTANDARD = LVCMOS33;
+NET "vga_r<3>"     LOC = "F7"  | IOSTANDARD = LVCMOS33;
+NET "vga_r<4>"     LOC = "D7"  | IOSTANDARD = LVCMOS33;
+NET "vga_r<5>"     LOC = "C7"  | IOSTANDARD = LVCMOS33;
+NET "vga_r<6>"     LOC = "F8"  | IOSTANDARD = LVCMOS33;
+NET "vga_r<7>"     LOC = "E8"  | IOSTANDARD = LVCMOS33;
 
-# VGA Green Channel Pins
-NET "VGA_Green<7>" LOC = "f12";
-NET "VGA_Green<6>" LOC = "e12";
-NET "VGA_Green<5>" LOC = "e11";
-NET "VGA_Green<4>" LOC = "f11";
-NET "VGA_Green<3>" LOC = "c11";
-NET "VGA_Green<2>" LOC = "d11";
-NET "VGA_Green<1>" LOC = "e9";
-NET "VGA_Green<0>" LOC = "f9";
+## Green Channel (3-bit output from RGB[4:2])
+NET "vga_g<0>"     LOC = "F9"  | IOSTANDARD = LVCMOS33;
+NET "vga_g<1>"     LOC = "E9"  | IOSTANDARD = LVCMOS33;
+NET "vga_g<2>"     LOC = "D11" | IOSTANDARD = LVCMOS33;
+NET "vga_g<3>"     LOC = "C11" | IOSTANDARD = LVCMOS33;
+NET "vga_g<4>"     LOC = "F11" | IOSTANDARD = LVCMOS33;
+NET "vga_g<5>"     LOC = "E11" | IOSTANDARD = LVCMOS33;
+NET "vga_g<6>"     LOC = "E12" | IOSTANDARD = LVCMOS33;
+NET "vga_g<7>"     LOC = "F12" | IOSTANDARD = LVCMOS33;
 
-# VGA Red Channel Pins
-NET "VGA_Red<7>" LOC = "e8";
-NET "VGA_Red<6>" LOC = "f8";
-NET "VGA_Red<5>" LOC = "c7";
-NET "VGA_Red<4>" LOC = "d7";
-NET "VGA_Red<3>" LOC = "f7";
-NET "VGA_Red<2>" LOC = "e7";
-NET "VGA_Red<1>" LOC = "b6";
-NET "VGA_Red<0>" LOC = "a6";
+## Blue Channel (2-bit output from RGB[1:0])
+NET "vga_b<0>"     LOC = "A13" | IOSTANDARD = LVCMOS33;
+NET "vga_b<1>"     LOC = "B13" | IOSTANDARD = LVCMOS33;
+NET "vga_b<2>"     LOC = "A14" | IOSTANDARD = LVCMOS33;
+NET "vga_b<3>"     LOC = "B14" | IOSTANDARD = LVCMOS33;
+NET "vga_b<4>"     LOC = "C14" | IOSTANDARD = LVCMOS33;
+NET "vga_b<5>"     LOC = "D14" | IOSTANDARD = LVCMOS33;
+NET "vga_b<6>"     LOC = "A16" | IOSTANDARD = LVCMOS33;
+NET "vga_b<7>"     LOC = "B16" | IOSTANDARD = LVCMOS33;
+
+# DAC Clock Output
+NET "dac_clk_out"  LOC = "A4"  | IOSTANDARD = LVCMOS33;   # Passthrough of sys_clk
