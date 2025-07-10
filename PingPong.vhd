@@ -1,218 +1,262 @@
+-------------------------------------------------------------------------------
+-- PingPong.vhd
+-- 
+-- A VHDL implementation of a Pong game for Xilinx Spartan-3E FPGA. 
+-- Features:
+--   • Clock division to generate pixel clock 
+--   • VGA synchronization (HS/VS) with front/back-porch handling 
+--   • Two-player paddle control via switches 
+--   • Ball movement, collision detection, and color changes 
+--   • Reset and optional pause switch 
+--   • DAC clock passthrough
+-------------------------------------------------------------------------------
+
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+-- Non-standard Arith/Unsigned libraries (enabled with -fsynopsys flag)
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity PingPong is
-    Port ( 
-        Clk : in STD_LOGIC;
-        SW0 : in STD_LOGIC; -- Reset switch
-        SW1 : in STD_LOGIC; -- Player 1 control switch
-        SW2 : in STD_LOGIC; -- Player 2 control switch
-        SW3 : in STD_LOGIC; -- Additional switch (e.g., pause)
-        VGA_HSync : out STD_LOGIC;
-        VGA_VSync : out STD_LOGIC;
-        VGA_Red : out STD_LOGIC_VECTOR (7 downto 0);
-        VGA_Green : out STD_LOGIC_VECTOR (7 downto 0);
-        VGA_Blue : out STD_LOGIC_VECTOR (7 downto 0);
-        DAC_CLK : out STD_LOGIC -- DAC clock output
+    Port (
+        -- System inputs
+        sys_clk      : in  STD_LOGIC;              -- 50 MHz board clock
+        reset_btn    : in  STD_LOGIC;              -- Active-high reset
+        p1_up_btn    : in  STD_LOGIC;              -- Player 1 move up
+        p1_down_btn  : in  STD_LOGIC;              -- Player 1 move down
+        pause_btn    : in  STD_LOGIC;              -- Pause or unused switch
+
+        -- VGA outputs
+        vga_hs       : out STD_LOGIC;              -- Horizontal sync
+        vga_vs       : out STD_LOGIC;              -- Vertical sync
+        vga_r        : out STD_LOGIC_VECTOR(7 downto 0);  -- Red channel
+        vga_g        : out STD_LOGIC_VECTOR(7 downto 0);  -- Green channel
+        vga_b        : out STD_LOGIC_VECTOR(7 downto 0);  -- Blue channel
+
+        -- DAC clock output
+        dac_clk_out  : out STD_LOGIC               -- Passthrough of sys_clk
     );
 end PingPong;
 
 architecture Behavioral of PingPong is
-    -- VGA Timing Constants
-    constant H_FRONT_PORCH : integer := 16;
-    constant H_TOTAL : integer := 800;
-    constant H_SYNC_PULSE : integer := 96;
-    constant V_FRONT_PORCH : integer := 10;
-    constant V_TOTAL : integer := 525;
-    constant V_SYNC_PULSE : integer := 2;
-    
-    -- Clock Generation Signals
-    signal Clock_Divider : STD_LOGIC := '0';
-    signal Clock_Counter : integer := 0;
 
-    -- Pixel Display Signals
-    signal Video_On : STD_LOGIC;
-    signal Horizontal_Counter : integer := 0;
-    signal Vertical_Counter : integer := 0;
+    ----------------------------------------------------------------------------
+    -- VGA timing parameters
+    ----------------------------------------------------------------------------
+    constant H_ACTIVE_PIXELS    : integer := 640;  -- Visible horizontal pixels
+    constant H_FRONT_PORCH      : integer := 16;   -- Front porch
+    constant H_SYNC_PULSE       : integer := 96;   -- HS pulse width
+    constant H_BACK_PORCH       : integer := 800 - H_ACTIVE_PIXELS - H_SYNC_PULSE - H_FRONT_PORCH;
+    constant H_TOTAL            : integer := 800;  -- Total horizontal clocks
 
-    -- Game State Signals
-    signal Player1_X : integer := 50; -- Player 1 X position
-    signal Player1_Y : integer := 360; -- Player 1 Y position
-    signal Player2_X : integer := 580; -- Player 2 X position
-    signal Player2_Y : integer := 60;  -- Player 2 Y position
-    signal Ball_X : integer := 310;    -- Ball X position
-    signal Ball_Y : integer := 230;    -- Ball Y position (center)
-    signal Ball_H_Direction : STD_LOGIC := '0'; -- Ball horizontal direction (0 = right, 1 = left)
-    signal Ball_V_Direction : STD_LOGIC := '0'; -- Ball vertical direction (0 = down, 1 = up)
+    constant V_ACTIVE_LINES     : integer := 480;  -- Visible vertical lines
+    constant V_FRONT_PORCH      : integer := 10;   -- Front porch
+    constant V_SYNC_PULSE       : integer := 2;    -- VS pulse width
+    constant V_BACK_PORCH       : integer := 525 - V_ACTIVE_LINES - V_SYNC_PULSE - V_FRONT_PORCH;
+    constant V_TOTAL            : integer := 525;  -- Total vertical clocks
 
-    -- Ball color
-    signal Ball_Color : STD_LOGIC_VECTOR(7 downto 0) := "11111100"; -- Yellow, initially
+    ----------------------------------------------------------------------------
+    -- Game constants
+    ----------------------------------------------------------------------------
+    constant PADDLE_HEIGHT      : integer := 80;    -- Paddle vertical size
+    constant PADDLE_WIDTH       : integer := 10;    -- Paddle horizontal thickness
+    constant BALL_SIZE          : integer := 10;    -- Ball square size
+    constant PADDLE_MOVE_SPEED  : integer := 1;     -- Pixels per update
+    constant BALL_SPEED_X       : integer := 1;     -- Horizontal ball speed
+    constant BALL_SPEED_Y       : integer := 1;     -- Vertical ball speed
 
-    -- Constants for game logic
-    constant PADDLE_HEIGHT : integer := 80;  -- Height of the paddle
-    constant BALL_SIZE : integer := 10;      -- Size of the ball
-    constant PADDLE_SPEED : integer := 1;    -- Speed of paddle movement
-    constant BALL_SPEED_X : integer := 1;    -- Horizontal speed of the ball
-    constant BALL_SPEED_Y : integer := 1;    -- Vertical speed of the ball
-    constant MAX_Y : integer := 480;         -- Maximum Y coordinate
-    constant MAX_X : integer := 640;         -- Maximum X coordinate
-    constant PADDLE_WIDTH : integer := 10;   -- Width of the paddle (added this constant)
+    ----------------------------------------------------------------------------
+    -- Clock division to generate pixel clock (~12.5 MHz if sys_clk = 50 MHz)
+    ----------------------------------------------------------------------------
+    signal pixel_clk        : STD_LOGIC := '0';
+    signal clk_div_counter  : integer    := 0;
 
-    -- Initialize RGB color
-    signal RGB : STD_LOGIC_VECTOR(7 downto 0) := "00000000"; -- Initialize to black
+    ----------------------------------------------------------------------------
+    -- VGA coordinate counters
+    ----------------------------------------------------------------------------
+    signal h_counter        : integer := 0;
+    signal v_counter        : integer := 0;
+
+    ----------------------------------------------------------------------------
+    -- Game state signals
+    ----------------------------------------------------------------------------
+    signal p1_y_pos         : integer := (V_ACTIVE_LINES - PADDLE_HEIGHT) / 2;  -- Center start
+    signal p2_y_pos         : integer := (V_ACTIVE_LINES - PADDLE_HEIGHT) / 2;
+    constant p1_x_pos       : integer := 50;   -- Fixed X for left paddle
+    constant p2_x_pos       : integer := 580;  -- Fixed X for right paddle
+
+    signal ball_x_pos       : integer := (H_ACTIVE_PIXELS - BALL_SIZE) / 2;
+    signal ball_y_pos       : integer := (V_ACTIVE_LINES - BALL_SIZE) / 2;
+    signal ball_dir_x       : STD_LOGIC := '0';  -- '0' = moving right, '1' = left
+    signal ball_dir_y       : STD_LOGIC := '0';  -- '0' = moving down, '1' = up
+
+    signal ball_color       : STD_LOGIC_VECTOR(7 downto 0) := "11111100";  -- Yellow
+    signal pixel_color      : STD_LOGIC_VECTOR(7 downto 0);
 
 begin
-    -- Clock Divider for Pixel Clock
-    Clock_Divider_Process : process(Clk)
+
+    ----------------------------------------------------------------------------
+    -- Clock Divider Process: divides sys_clk by 4 for a ~12.5 MHz pixel clock
+    ----------------------------------------------------------------------------
+    clk_div_proc: process(sys_clk)
     begin
-        if rising_edge(Clk) then
-            Clock_Counter <= Clock_Counter + 1;
-            if Clock_Counter >= 4 then  -- Divide by 4 to generate pixel clock
-                Clock_Divider <= not Clock_Divider;
-                Clock_Counter <= 0;
+        if rising_edge(sys_clk) then
+            if clk_div_counter = 3 then
+                pixel_clk       <= not pixel_clk;
+                clk_div_counter <= 0;
+            else
+                clk_div_counter <= clk_div_counter + 1;
             end if;
         end if;
-    end process Clock_Divider_Process;
+    end process clk_div_proc;
 
-    -- VGA Sync Signal Generation
-    VGA_Sync_Generation : process(Clock_Divider)
+    ----------------------------------------------------------------------------
+    -- VGA Sync Generation: HS/VS, counters, and porches
+    ----------------------------------------------------------------------------
+    vga_sync_proc: process(pixel_clk)
     begin
-        if rising_edge(Clock_Divider) then
-            -- Horizontal sync and counter
-            if Horizontal_Counter < H_TOTAL - 1 then
-                Horizontal_Counter <= Horizontal_Counter + 1;
-            else
-                Horizontal_Counter <= 0;
-            end if;
-
-            -- Vertical sync and counter
-            if Vertical_Counter < V_TOTAL - 1 then
-                Vertical_Counter <= Vertical_Counter + 1;
-            else
-                Vertical_Counter <= 0;
-            end if;
-
-            -- Generate HSync and VSync signals
-            if Horizontal_Counter < H_SYNC_PULSE then
-                VGA_HSync <= '0';
-            else
-                VGA_HSync <= '1';
-            end if;
-
-            if Vertical_Counter < V_SYNC_PULSE then
-                VGA_VSync <= '0';
-            else
-                VGA_VSync <= '1';
-            end if;
-
-            -- Adjust for front porch, back porch, and active image area
-            if Horizontal_Counter < H_FRONT_PORCH or Horizontal_Counter >= MAX_X then
-                VGA_HSync <= '1'; -- Set HSync during front porch and back porch
-            end if;
-
-            if Vertical_Counter < V_FRONT_PORCH or Vertical_Counter >= MAX_Y then
-                VGA_VSync <= '1'; -- Set VSync during front porch and back porch
-            end if;
-        end if;
-    end process VGA_Sync_Generation;
-
-    -- Game Logic Process
-    Game_Logic_Process : process(Clk)
-    begin
-        if rising_edge(Clk) then
-            -- Reset Game State
-            if SW0 = '1' then
-                Player1_Y <= 360;
-                Player2_Y <= 60;
-                Ball_X <= 310;
-                Ball_Y <= 230;
-                Ball_H_Direction <= '0';
-                Ball_V_Direction <= '0';
-                Ball_Color <= "11111100"; -- Yellow
-            end if;
-
-            -- Player 1 Movement
-            if SW1 = '1' then
-                if Player1_Y > 0 then
-                    Player1_Y <= Player1_Y - PADDLE_SPEED;
+        if rising_edge(pixel_clk) then
+            -- Horizontal counter
+            if h_counter = H_TOTAL - 1 then
+                h_counter <= 0;
+                -- Vertical counter
+                if v_counter = V_TOTAL - 1 then
+                    v_counter <= 0;
+                else
+                    v_counter <= v_counter + 1;
                 end if;
-            elsif SW2 = '1' then
-                if Player1_Y < MAX_Y - PADDLE_HEIGHT then
-                    Player1_Y <= Player1_Y + PADDLE_SPEED;
+            else
+                h_counter <= h_counter + 1;
+            end if;
+
+            -- Generate HS pulse (active low)
+            if h_counter < H_SYNC_PULSE then
+                vga_hs <= '0';
+            else
+                vga_hs <= '1';
+            end if;
+
+            -- Generate VS pulse (active low)
+            if v_counter < V_SYNC_PULSE then
+                vga_vs <= '0';
+            else
+                vga_vs <= '1';
+            end if;
+        end if;
+    end process vga_sync_proc;
+
+    ----------------------------------------------------------------------------
+    -- Main Game Logic: reset, paddle move, ball move, collisions
+    ----------------------------------------------------------------------------
+    game_logic_proc: process(sys_clk)
+    begin
+        if rising_edge(sys_clk) then
+            -- Reset everything on reset_btn
+            if reset_btn = '1' then
+                p1_y_pos    <= (V_ACTIVE_LINES - PADDLE_HEIGHT) / 2;
+                p2_y_pos    <= (V_ACTIVE_LINES - PADDLE_HEIGHT) / 2;
+                ball_x_pos  <= (H_ACTIVE_PIXELS - BALL_SIZE) / 2;
+                ball_y_pos  <= (V_ACTIVE_LINES - BALL_SIZE) / 2;
+                ball_dir_x  <= '0';
+                ball_dir_y  <= '0';
+                ball_color  <= "11111100";  -- Yellow
+            else
+                -- Player 1 movement
+                if p1_up_btn = '1' and p1_y_pos > 0 then
+                    p1_y_pos <= p1_y_pos - PADDLE_MOVE_SPEED;
+                elsif p1_down_btn = '1' and p1_y_pos < V_ACTIVE_LINES - PADDLE_HEIGHT then
+                    p1_y_pos <= p1_y_pos + PADDLE_MOVE_SPEED;
+                end if;
+
+                -- (Add Player 2 controls here if desired)
+                -- e.g., using pause_btn or other switches
+
+                -- Ball horizontal movement
+                if ball_dir_x = '0' then
+                    ball_x_pos <= ball_x_pos + BALL_SPEED_X;
+                else
+                    ball_x_pos <= ball_x_pos - BALL_SPEED_X;
+                end if;
+
+                -- Ball vertical movement
+                if ball_dir_y = '0' then
+                    ball_y_pos <= ball_y_pos + BALL_SPEED_Y;
+                else
+                    ball_y_pos <= ball_y_pos - BALL_SPEED_Y;
+                end if;
+
+                -- Collision: left paddle
+                if ball_x_pos <= p1_x_pos + PADDLE_WIDTH and
+                   ball_y_pos >= p1_y_pos and
+                   ball_y_pos <= p1_y_pos + PADDLE_HEIGHT then
+                    ball_dir_x <= '0';                    -- Bounce right
+                    ball_color <= "11110000";             -- Red on hit
+                end if;
+
+                -- Collision: right paddle
+                if ball_x_pos + BALL_SIZE >= p2_x_pos and
+                   ball_y_pos >= p2_y_pos and
+                   ball_y_pos <= p2_y_pos + PADDLE_HEIGHT then
+                    ball_dir_x <= '1';                    -- Bounce left
+                    ball_color <= "00001111";             -- Blue on hit
+                end if;
+
+                -- Bounce off top/bottom
+                if ball_y_pos = 0 or ball_y_pos + BALL_SIZE = V_ACTIVE_LINES then
+                    ball_dir_y <= not ball_dir_y;
+                end if;
+
+                -- Reset ball if out of horizontal bounds
+                if ball_x_pos = 0 or ball_x_pos + BALL_SIZE = H_ACTIVE_PIXELS then
+                    ball_x_pos <= (H_ACTIVE_PIXELS - BALL_SIZE) / 2;
+                    ball_y_pos <= (V_ACTIVE_LINES - BALL_SIZE) / 2;
+                    ball_dir_x <= '0';
+                    ball_dir_y <= '0';
+                    ball_color <= "11111100";  -- Yellow
                 end if;
             end if;
-
-            -- Ball Movement
-            if Ball_H_Direction = '0' then
-                Ball_X <= Ball_X + BALL_SPEED_X;
-            else
-                Ball_X <= Ball_X - BALL_SPEED_X;
-            end if;
-
-            if Ball_V_Direction = '0' then
-                Ball_Y <= Ball_Y + BALL_SPEED_Y;
-            else
-                Ball_Y <= Ball_Y - BALL_SPEED_Y;
-            end if;
-
-            -- Ball Collision with Paddles
-            if (Ball_X <= Player1_X + PADDLE_WIDTH) and (Ball_Y >= Player1_Y) and (Ball_Y <= Player1_Y + PADDLE_HEIGHT) then
-                Ball_H_Direction <= '0';
-                -- Change ball color to red when it hits the paddle
-                Ball_Color <= "11110000"; -- Red
-            end if;
-
-            if (Ball_X + BALL_SIZE >= Player2_X) and (Ball_Y >= Player2_Y) and (Ball_Y <= Player2_Y + PADDLE_HEIGHT) then
-                Ball_H_Direction <= '1';
-                -- Change ball color to blue when it hits the paddle
-                Ball_Color <= "00001111"; -- Blue
-            end if;
-
-            -- Ball Collision with Top and Bottom Walls
-            if Ball_Y <= 0 or Ball_Y >= MAX_Y - 1 then
-                Ball_V_Direction <= not Ball_V_Direction;
-            end if;
-
-            -- Ball Out of Bounds
-            if Ball_X <= 0 or Ball_X >= MAX_X - 1 then
-                Ball_X <= 310;
-                Ball_Y <= 230;
-                Ball_H_Direction <= '0';
-                Ball_V_Direction <= '0';
-                Ball_Color <= "11111100"; -- Yellow
-            end if;
         end if;
-    end process Game_Logic_Process;
+    end process game_logic_proc;
 
-    -- DAC Clock Output
-    DAC_CLK <= Clk; -- You can replace this with the actual DAC clock signal generation
-
-    -- Pixel Coloring Process
-    Pixel_Coloring : process(Horizontal_Counter, Vertical_Counter, Ball_X, Ball_Y, Ball_Color, Player1_X, Player1_Y, Player2_X, Player2_Y)
+    ----------------------------------------------------------------------------
+    -- Pixel Coloring: decide RGB based on object positions each pixel clock
+    ----------------------------------------------------------------------------
+    pixel_gen_proc: process(h_counter, v_counter,
+                             p1_x_pos, p1_y_pos,
+                             p2_x_pos, p2_y_pos,
+                             ball_x_pos, ball_y_pos, ball_color)
     begin
-        -- Initialize RGB to black
-        RGB <= "00000000";
-        
-        -- Check if within active image area
-        if Horizontal_Counter < MAX_X and Vertical_Counter < MAX_Y then
-            -- Check if the pixel is within the ball area
-            if Ball_X <= Horizontal_Counter and Horizontal_Counter <= Ball_X + BALL_SIZE - 1
-            and Ball_Y <= Vertical_Counter and Vertical_Counter <= Ball_Y + BALL_SIZE - 1 then
-                RGB <= Ball_Color; -- Set pixel color to ball color
-            elsif Horizontal_Counter <= Player1_X + PADDLE_WIDTH - 1 and Player1_Y <= Vertical_Counter and Vertical_Counter <= Player1_Y + PADDLE_HEIGHT - 1 then
-                RGB <= "11110000"; -- Set pixel color to red for Player 1 paddle
-            elsif Horizontal_Counter >= Player2_X and Player2_Y <= Vertical_Counter and Vertical_Counter <= Player2_Y + PADDLE_HEIGHT - 1 then
-                RGB <= "00001111"; -- Set pixel color to blue for Player 2 paddle
+        -- Default to black
+        pixel_color := (others => '0');
+
+        -- Only draw within active area
+        if h_counter < H_ACTIVE_PIXELS and v_counter < V_ACTIVE_LINES then
+
+            -- Draw the ball
+            if (h_counter >= ball_x_pos) and (h_counter < ball_x_pos + BALL_SIZE) and
+               (v_counter >= ball_y_pos) and (v_counter < ball_y_pos + BALL_SIZE) then
+                pixel_color := ball_color;
+
+            -- Draw Player 1 paddle
+            elsif (h_counter >= p1_x_pos) and (h_counter < p1_x_pos + PADDLE_WIDTH) and
+                  (v_counter >= p1_y_pos) and (v_counter < p1_y_pos + PADDLE_HEIGHT) then
+                pixel_color := "11110000";  -- Red
+
+            -- Draw Player 2 paddle
+            elsif (h_counter >= p2_x_pos) and (h_counter < p2_x_pos + PADDLE_WIDTH) and
+                  (v_counter >= p2_y_pos) and (v_counter < p2_y_pos + PADDLE_HEIGHT) then
+                pixel_color := "00001111";  -- Blue
+
             end if;
         end if;
-        
-        -- Output RGB values
-        -- Output RGB values (adjusted for VGA signal sizes)
-VGA_Red <= RGB(7 downto 5);
-VGA_Green <= RGB(4 downto 2);
-VGA_Blue <= RGB(1 downto 0);
 
-    end process Pixel_Coloring;
+        -- Map 8-bit pixel_color to VGA (3-bit R, 3-bit G, 2-bit B)
+        vga_r  <= pixel_color(7 downto 5);
+        vga_g  <= pixel_color(4 downto 2);
+        vga_b  <= pixel_color(1 downto 0);
+    end process pixel_gen_proc;
+
+    -- Direct passthrough of system clock to DAC clock pin
+    dac_clk_out <= sys_clk;
+
 end Behavioral;
