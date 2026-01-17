@@ -9,7 +9,7 @@ player move a paddle to keep the ball in play.
 - Generates VGA HS/VS sync timing for 640x480 @ 60 Hz.
 - Draws paddles and a moving ball with color changes on collisions.
 - Supports reset and paddle control inputs.
-- Exposes a passthrough DAC clock for the VGA DAC.
+- Routes the system clock to the DAC clock output used by the onboard VGA DAC.
 
 ## Key files
 - `PingPong.vhd` – main VHDL source implementing timing, game logic, and RGB output.
@@ -20,4 +20,5 @@ player move a paddle to keep the ball in play.
 
 ## Build/program (high level)
 Open `Project2PingPong.xise` in Xilinx ISE 13.4 (Spartan-3E target), run
-implementation to regenerate the bitstream, then program the FPGA as usual.
+Synthesize, Implement Design, and Generate Programming File to regenerate the
+bitstream, then program the FPGA as usual.
